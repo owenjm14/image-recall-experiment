@@ -1,269 +1,1196 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- February 5, 2021
-By: Wilma Bainbridge
-
-Example 4: This script builds onto Example 3, by posting the data to a server, by sending the data to a PHP script to do server-side processing (processdata.php). The only difference here from Example 3 is line 49 which sends the data to the PHP script! Then refer to the corresponding PHP script.
-
-Also note that this code relies heavily on open source Javascript plugin wPaint.
-You can learn more about it here: https://wpaint.websanova.com/
-
-/-->
-
 <head>
-	<meta charset="utf-8"/>
-	<title>Example 3</title>
+ <meta charset="utf-8"/>
+  <title>Aphantasia Study</title>
 
-	<!--- Let's put some CSS in here to make our buttons bigger and prettier -->
-	<style>
-	.animbutton {
-		background-color: #f2f2f2;
-		font-size: 40px;
-		border: 3px solid #000000;
-	}
-	.animbutton:hover {
-		background-color: #cccccc;
-	}
-	.animbutton:active {
-		background-color: #cccccc;
-		box-shadow: 0 5px #666;
-		transform: translateY(4px);
-	}
+  <!-- filestart -->
+  <link rel="icon" type="image/vnd.microsoft.icon"  href="http://wilmabainbridge.com/research/wPaint-2.5.0/demo/img/favicon.ico" />
+  <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.1.10.2.min.js"></script>
+  <!-- fileend -->
+  <style>
+  .animbutton {
+  	background-color: #f2f2f2;
+  	font-size: 40px;
+  	border: 3px solid #000000;
+  }
+  .animbutton:hover {
+  	background-color: #cccccc;
+  }
+  .animbutton:active {
+  	background-color: #cccccc;
+  	box-shadow: 0 5px #666;
+  	transform: translateY(4px);
+  }
+  	
   </style>
-
 </head>
-
 <body>
 
-	<form method="post" autocomplete="off">
+<form method="post" autocomplete="off">
 
-	<!------------------------------------------------------------------------>
-	<!-- Here is all the code that defines the HTML appearance of the page! -->
+<!--- These are the hidden variables that get outputted to AMT --->
+<!--- Study -->
+<input id="imseqout" name="imseq" type="hidden" value="" />
 
+<!-- Recognition -->
+<input id="recogseqout" name="recogseq" type="hidden" value="" />
+<input type = "hidden" name = "recogtypeseq" id = "recogtypeout" value = "">
+<input type = "hidden" name = "recogperfseq" id = "recogperfout" value = "">
 
-		<!-- Put the buttons that start the experiment and progress through the different trials. This will also save the drawings when done drawing. Different buttons will be visible at different points in the experiment.-->
-		<div style="text-align:center">
-			<input type="button" name="start" id="startexp" value="Start" onClick="animateExperiment()" class="animbutton" />
-			<input type="button" name="next" id="nextbutton" value="Next" onClick="saveImg()" class="animbutton" hidden />
-			<!-- This here is the only thing new for Example 4! -->
-			<input type="submit" id="submitButton" value="Submit" class="animbutton" formaction="processdata.php" hidden />
-		<br /><br />
+<!-- Drawings -->
+<input type="hidden" name="drawing1" id="draw1id" value="" />
+<input type="hidden" name="drawing2" id="draw2id" value="" />
+<input type="hidden" name="drawing3" id="draw3id" value="" />
+<input type="hidden" name="drawing4" id="draw4id" value="" />
+<input type="hidden" name="drawing5" id="draw5id" value="" />
+<input type="hidden" name="drawing6" id="draw6id" value="" />
+<input type="hidden" name="mousemove1" id="mousemoveid1" value="" />
+<input type="hidden" name="mousemove2" id="mousemoveid2" value="" />
+<input type="hidden" name="mousemove3" id="mousemoveid3" value="" />
+<input type="hidden" name="mousemove4" id="mousemoveid4" value="" />
+<input type="hidden" name="mousemove5" id="mousemoveid5" value="" />
+<input type="hidden" name="mousemove6" id="mousemoveid6" value="" />
 
-		<!-- Code for where to put the drawing interface -->
-		<div style="text-align: center">
-			<span id="imagedisplay" style="position:relative"><!--This is where other experimental info will display --></span>
-			<span id="drawingdisplay" hidden>
-				<div id="wPaint" style="position:relative; width:500px; height:500px; margin:50px auto 0 auto; border-style:solid; border-color:#000000; border-width:3px"></div> 
-			</span>
-		
+<!--- To get the sizing of their screen --->
+<input type = "hidden" name = "expdispleft" id = "expdispleftout" value = "">
+<input type = "hidden" name = "expdispright" id = "expdisprightout" value = "">
+<input type="hidden"  name="expdisptop" id="expdisptopout" value="" />
+<input type="hidden"  name="expdispbottom" id="expdispbottomout" value="" />
 
-			<!-- These are hidden tags that save the drawings when they're done. -->
-			<input type="hidden" name="drawing1" id="draw1id" value="" />
-			<input type="hidden" name="drawing2" id="draw2id" value="" />
-			<!-- These are hidden tags that save the mouse movements for the 2 drawings -->
-			<input type="hidden" name="mousemove1" id="mousemove1id" value="" />
-			<input type="hidden" name="mousemove2" id="mousemove2id" value="" />
-			<!-- Save the locations of the edges of the canvas-->
-			<input type="hidden" name="wpaintleft" id="wpaintleftout" value = "" />
-			<input type="hidden" name="wpaintright" id="wpaintrightout" value = "" />
-			<input type="hidden" name="wpainttop" id="wpainttopout" value="" />
-			<input type="hidden" name="wpaintbottom" id="wpaintbottomout" value="" />
+<input type = "hidden" name = "wpaintleft" id = "wpaintleftout" value = "">
+<input type = "hidden" name = "wpaintright" id = "wpaintrightout" value = "">
+<input type="hidden" name="wpainttop" id="wpainttopout" value="" />
+<input type="hidden" name="wpaintbottom" id="wpaintbottomout" value="" />
 
-			<!-- Examples of how to put in other types of questions -->
+<input type = "hidden" name = "wpaintimgleft" id = "wpaintimgleftout" value = "">
+<input type = "hidden" name = "wpaintimgright" id = "wpaintimgrightout" value = "">
+<input type="hidden" name="wpaintimgtop" id="wpaintimgtopout" value="" />
+<input type="hidden" name="wpaintimgbottom" id="wpaintimgbottomout" value="" />
 
-			<span id="otherquestions" style="font-family:helvetica" hidden>
-				<br><br><br>
-   
-				<b>Age:</b>&nbsp;&nbsp;&nbsp;
-				<input type="text" name="age"/><br /><br>
+<input type = "hidden" name = "recexpdispleft" id = "recexpdispleftout" value = "">
+<input type = "hidden" name = "recexpdispright" id = "recexpdisprightout" value = "">
+<input type="hidden"  name="recexpdisptop" id="recexpdisptopout" value="" />
+<input type="hidden"  name="recexpdispbottom" id="recexpdispbottomout" value="" />
 
-				<b>What type of device are you using?</b><br>
-				<input name="device" type="radio" id="desktop" value="desktop" /><label for="desktop">Desktop Computer</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input name="device" type="radio" id="laptop" value="laptop" /><label for="laptop"> Laptop</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input name="device" type="radio" id="tablet" value="tablet" /><label for="tablet"> Tablet</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input name="device" type="radio" id="smartphone" value="smartphone" /><label for="smartphone"> Smartphone</label><br><br>
+<input type = "hidden" name = "recwpaintleft" id = "recwpaintleftout" value = "">
+<input type = "hidden" name = "recwpaintright" id = "recwpaintrightout" value = "">
+<input type="hidden" name="recwpainttop" id="recwpainttopout" value="" />
+<input type="hidden" name="recwpaintbottom" id="recwpaintbottomout" value="" />
 
-				<b>Which input method are you using right now?</b><br> <input name="inputdevice" type="radio" value="mouse" /><label for="desktop">Mouse</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp
-				<input name="inputdevice" type="radio" id="trackpad" value="trackpad" /><label for="trackpad"> Trackpad</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input name="inputdevice" type="radio" id="joystick" value="joystick" /><label for="joystick"> Joystick</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input name="inputdevice" type="radio" id="nub" value="nub" /><label for="nub"> Keyboard nub</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input name="inputdevice" type="radio" id="finger" value="finger" /><label for="finger"> Finger</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="inputdevice" type="radio" id="stylus" value="stylus" /><label for="stylus"> Stylus</label><br><br>
+<input type = "hidden" name = "recwpaintimgleft" id = "recwpaintimgleftout" value = "">
+<input type = "hidden" name = "recwpaintimgright" id = "recwpaintimgrightout" value = "">
+<input type="hidden" name="recwpaintimgtop" id="recwpaintimgtopout" value="" />
+<input type="hidden" name="recwpaintimgbottom" id="recwpaintimgbottomout" value="" />
 
-				<b>How would you rate your artistic abilities?</b><br>
-				Very poor <input type="radio" name="artabilities" id="art1" value="1"><label for="art1">1</label>
-				<input type="radio" name="artabilities" id="art2" value="2"><label for="art2"> 2</label>
-				<input type="radio" name="artabilities" id="art3" value="3"><label for="art3"> 3</label>
-				<input type="radio" name="artabilities" id="art4" value="4"><label for="art4"> 4</label>
-				<input type="radio" name="artabilities" id="art5" value="5"><label for="art5"> 5 </label>&nbsp;&nbsp; Very good<br><br>
- 
-				<b>Please briefly list any experience you have with artistic training (e.g., art classes). Write N/A if none. </b><br>
-				<input type="text" name="artexperience" size="50"/><br /><br>
-			</span>
-		</div>
-
-	<!------------------------------------------------------------------------>
-	<!-- Here is all the code that does all the behind-the-scenes work! -->
-
-		<!-- This loads in all the plugins necessary. I have JQuery and WPaint hosted on my private server. I recommend you host them on your own
-		server so you are not dependent on my server, in case it goes down someday! --> 
-
-		<!-- jQuery UI -->
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.1.10.2.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.core.1.10.3.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.widget.1.10.3.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.mouse.1.10.3.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.draggable.1.10.3.min.js"></script>
+      <!-- jQuery UI -->
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.core.1.10.3.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.widget.1.10.3.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.mouse.1.10.3.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/jquery.ui.draggable.1.10.3.min.js"></script>
       
-		<!-- wColorPicker -->
-		<link rel="Stylesheet" type="text/css" href="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/wColorPicker.min.css" />
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/lib/wColorPicker.min.js"></script>
+      <!-- wColorPicker -->
+      <link rel="Stylesheet" type="text/css" href="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/wColorPicker.min.css" />
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/lib/wColorPicker.min.js"></script>
 
-		<!-- wPaint -->
-		<link rel="Stylesheet" type="text/css" href="https://wilmabainbridge.com/research/wPaint-2.5.0/wPaint.min.css" />
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/wPaint.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/plugins/main/wPaint.menu.main.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/plugins/text/wPaint.menu.text.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/plugins/shapes/wPaint.menu.main.shapes.min.js"></script>
-		<script type="text/javascript" src="https://wilmabainbridge.com/research/wPaint-2.5.0/plugins/file/wPaint.menu.main.file.min.js"></script>
+      <!-- wPaint -->
+      <link rel="Stylesheet" type="text/css" href="http://wilmabainbridge.com/research/wPaint-2.5.0/wPaint.min.css" />
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/wPaint.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/plugins/main/wPaint.menu.main.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/plugins/text/wPaint.menu.text.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/plugins/shapes/wPaint.menu.main.shapes.min.js"></script>
+      <script type="text/javascript" src="http://wilmabainbridge.com/research/wPaint-2.5.0/plugins/file/wPaint.menu.main.file.min.js"></script>
 
-		<script type="text/javascript">
-		
-			// Now this is Javascript code that initializes the wPaint interface and gets image saving to work
+<script type="text/javascript">
+      
+/********* wPaint related code **********/
         
-			// * If you want to remove certain capabilities, you can do that here with code like:
-			// delete jQuery.fn.wPaint.menus.main.items.ellipse;
-			// * That will delete the ellipse features. You can look at jQuery.fn.wPaint.menus.main.items to see all your options.
+//    remove menu items you don't want to use
+delete jQuery.fn.wPaint.menus.main.items.ellipse;
+delete jQuery.fn.wPaint.menus.main.items.rectangle;
+delete jQuery.fn.wPaint.menus.main.items.line;
+delete jQuery.fn.wPaint.menus.main.items.text;
+delete jQuery.fn.wPaint.menus.main.items.lineWidth;
+delete jQuery.fn.wPaint.menus.main.items.bucket;
+delete jQuery.fn.wPaint.menus.main.items.fillStyle;
+delete jQuery.fn.wPaint.menus.main.items.roundedRect;
+delete jQuery.fn.wPaint.menus.main.items.circle;
+delete jQuery.fn.wPaint.menus.main.items.square;
+delete jQuery.fn.wPaint.menus.main.items.pentagon;
+delete jQuery.fn.wPaint.menus.main.items.roundedSquare;
+delete jQuery.fn.wPaint.menus.main.items.diamond;
+delete jQuery.fn.wPaint.menus.main.items.hexagon;
+delete jQuery.fn.wPaint.menus.main.items.save;
+delete jQuery.fn.wPaint.menus.main.items.loadBg;
+delete jQuery.fn.wPaint.menus.main.items.loadFg;
+        
+/********* Track mouse movements **********/
 
-			// initialize wPaint
-			// Look into the wPaint documentation for what here can be changed!
-			$('#wPaint').wPaint({
-				path: 'https://wilmabainbridge.com/research/wPaint-2.5.0/',
-				bg: '#FFFFFF',
-				menuOffsetLeft: -50,
-				menuOffsetTop: -50,
-				mode: 'pencil',
-				lineWidth: '3',
-				strokeStyle: '#000000',
-				fillStyle: '#000000'
-				});
+// get canvas position
+var rect = "";
 
-			// Track mouse movements
-			// get canvas position
-			var rect = "";
-			var mousemovements = "";
-			var clicking = false;
-			var startTime = new Date().getTime();
+var clicking = false;
+var startRecall = false;
+var mousemovements = "";
+var startTime = 0;
+//var preloadcounter = 0;
+//var totalpreload = 0;
 
-			// Save the drawing in the hidden input when this function is triggered
-			// This function is updated for Example 3!
-			function saveImg() {
-				// find which hidden element to update based on the trial number
-				drawid = 'draw' + drawingNumber + 'id';
-				moveid = 'mousemove' + drawingNumber + 'id';
-				document.getElementById(drawid).value = $('#wPaint').wPaint('image');
-				document.getElementById(moveid).value = mousemovements;
+$(document).mousedown(function(){
+    clicking = true;
+   // console.log("mousedown");
+});
 
-				// Get the location of the wPaint canvas and save it in the hidden inputs
-				var rect = document.getElementById('wPaint').getBoundingClientRect();
-				document.getElementById('wpaintleftout').value = rect.left;
-				document.getElementById('wpaintrightout').value = rect.right;
-				document.getElementById('wpainttopout').value = rect.top;
-				document.getElementById('wpaintbottomout').value = rect.bottom;
+$(document).mouseup(function(){
+    clicking = false;
+    mousemovements = mousemovements + "9999,9999,9999;"; // signifies a stroke ending
+   // console.log("mouseup");
+});
 
-				// clear the interface and the mouse movements for the new image!
-				$('#wPaint').wPaint('clear');
-				mousemovements = '';
-				drawingNumber = drawingNumber + 1;
-				var d = new Date();
-				startTime = d.getTime();
-				experimentPhase = experimentPhase + 1;
-				animateExperiment(); // Continue onto the next part of the experiment
-			}
+$(document).mousemove(function(e){
+	var d = new Date();  
 
-			// Track when they're holding the mouse button down
-			$(document).mousedown(function(){
-				clicking = true;
-			});
+	var padding = 100; // extra pixel padding so don't miss drawing
+    if(startRecall == false || clicking == false) return;
+    var xcoord = e.pageX;
+    var ycoord = e.pageY;
+    console.log("(" + xcoord + "," + ycoord + ")");
+   // if(xcoord >= rect.left-padding && xcoord <= rect.right+padding && ycoord >= rect.top && ycoord <= rect.bottom+padding){
+   var shrunktime = d.getTime() - startTime;
+    	mousemovements = mousemovements + xcoord + "," + ycoord + "," + shrunktime + ";";
+//	}
+});
 
-			// Save where the mouse is when it's moving while clicked
-			$(document).mousemove(function(e){
-				var d = new Date();   // get the time
-				var padding = 100; // extra pixel padding so don't miss drawing
-				if(clicking == false) return; // don't save data when the mouse isn't clicked
-				// Get the x and y coordinates of the click
-				var xcoord = e.pageX;
-				var ycoord = e.pageY;
-				
-				//if(xcoord >= rect.left-padding && xcoord <= rect.right+padding && ycoord >= rect.top && ycoord <= rect.bottom+padding){
-					var timeDiff = d.getTime() - startTime;
-					// Save the mouse movement as: X,Y,milliseconds-from-start;
-					console.log("(" + xcoord + "," + ycoord + ")");
-					mousemovements = mousemovements + xcoord + "," + ycoord + "," + timeDiff + ";";
-				//}
-			});
+// preloading isn't working!! we'll do it the dumb way
+/*$(window).load(function(){
+	totalpreload = expimages.length + foilImages.length;
+    preload(expimages);
+    preload(foilImages);
+    preload([fixation_address]);
+});*/
 
-			$(document).mouseup(function(){
-				clicking = false;
-				// Add in a marker that a drawing stroke ended: 9999,9999,9999;
-				mousemovements = mousemovements + "9999,9999,9999;";
-			});
+function saveImg() {
+// this both saves the drawings but also deals with advancing to different trial types
+// basically this is what happens when "NEXT" is clicked. Slightly sloppy coding
+	
+	if (trialnum == 0){
+	// 1: Finished reading first set of instructions to study phase
+	document.getElementById("nextbutton").disabled = true;
+	animateStudyPhase();
+	}
+	else if (trialnum == 1) {
+	// 2: Fished reading second set of instructions, to drawing recall
+	var d = new Date();
+	startTime = d.getTime();
+	doRecallPhase();
+	}
+	else if (trialnum <=imstoremember.length){ // 2,3
+	// 3: Do the remaining recall trials
+		idname = 'draw' + drawCount  + 'id';
+		movid = 'mousemoveid' + drawCount;
+		document.getElementById(idname).value = $('#wPaint').wPaint('image');
+		document.getElementById(movid).value = mousemovements;
+		$('#wPaint').wPaint('clear');
+		mousemovements = '';
+		drawCount = drawCount+1;
+		var d = new Date();
+		startTime = d.getTime();
+		document.getElementById('instructions').innerHTML = '<b>Now, Draw picture #' + drawCount + '!</b> Click NEXT for the next one.'; 
+		document.getElementById('howtouse').innerHTML = '<div style="font-size:20pt"><b>Drawing #' + drawCount + '</b></div><br><u>How to use:</u><br>Please draw in as much detail as you can, using the pencil. You can change the color of the pencil to color in objects. You can erase or undo any errors. If you do too many undos and see your previous drawing, you can press redo to get back to your current drawing. The X deletes everything in the drawing. Note that when you click "Next" you cannot go back to a previous drawing.';
+	}
+	else if (trialnum == imstoremember.length+1) { // 4
+	// 4: Give instructions to recognition task
+	startRecall = false;
+	idname = 'draw' + drawCount  + 'id';
+		movid = 'mousemoveid' + drawCount;
+		document.getElementById(idname).value = $('#wPaint').wPaint('image');
+		document.getElementById(movid).value = mousemovements;
+		$('#wPaint').wPaint('clear');
+		mousemovements = '';
+		drawCount = drawCount+1;
+	document.getElementById('wpaintcont').hidden = true;
+	var imtag = '<div style="font-size:24px">You will now see some images. <b>Indicate</b> whether you remember seeing it before.<br><br>Press <b>J</b> if you <i>remember</i> seeing it<br>Press <b>K</b> if you <i>do not remember</i> seeing it.<br><br>This will take 2-3 minutes.<br><br>Click <b>NEXT</b> to continue.</div>';
+			document.getElementById('howtouse').innerHTML = '<u>How to use:</u><br>Please draw in as much detail as you can, using the pencil. You can change the color of the pencil to color in objects. You can erase or undo any errors. If you do too many undos and see your previous drawing, you can press redo to get back to your current drawing. The X deletes everything in the drawing. Note that when you click "Next" you cannot go back to a previous drawing.';
+		updateText(imtag);
+			document.getElementById('instructions').innerHTML = 'Task instructions'; 
+	}
+	else if (trialnum == imstoremember.length+2) { // 5
+	// 5: Do the recognition task now
+		document.getElementById("nextbutton").disabled = true;
+		doRecognitionPhase();
+	}
+	else if (trialnum == imstoremember.length+3) { // 6
+	// 6: Finish instructions to drawing copying, move onto that now
+		saveRecogProgress();
+		var d = new Date();
+		startTime = d.getTime();
+		copyDrawingPhase();	
+	}
+	else if (trialnum < imstoremember.length+3+imstocopy.length) { // 7,8
+	// 7: Do other copying images
+		idname = 'draw' + drawCount  + 'id';
+		movid = 'mousemoveid' + drawCount;
+		document.getElementById(idname).value = $('#wPaint').wPaint('image');
+		document.getElementById(movid).value = mousemovements;
+		$('#wPaint').wPaint('clear');
+		mousemovements = '';
+		drawCount = drawCount + 1;
+		var printCount = drawCount - 3;
+		document.getElementById('instructions').innerHTML = 'Drawing #' + printCount + ': Copy the drawing!'; 
+		var d = new Date();
+		startTime = d.getTime();
+		copyDrawingPhase();
+	}
+	else if (trialnum == imstoremember.length+3+imstocopy.length) { // 9
+	// done with drawings, now show the VVIQ
+	idname = 'draw' + drawCount  + 'id';
+		movid = 'mousemoveid' + drawCount;
+		document.getElementById(idname).value = $('#wPaint').wPaint('image');
+		document.getElementById(movid).value = mousemovements;
+		$('#wPaint').wPaint('clear');
+		mousemovements = '';
+	document.getElementById('wpaintcont').hidden = true;
+	document.getElementById('wholetable').hidden = true;
+	document.getElementById('vviq').hidden = false;
+	}
+	else {
+	// finally, go onto the OSIQ
+	document.getElementById("nextbutton").disabled = true;
+	document.getElementById('vviq').hidden = true;
+	document.getElementById('osiq').hidden = false;
+	}
+	
+	trialnum = trialnum + 1;
+	
+}
+              
+/***************** Timed memory task ***************/
+/*
+Current experiment order:
 
-			/*******************************************************/
-			// New code for Example 3: Have multiple trials of drawing
+1. Study images (3 images, 15 s each)
+2. Draw images (3 images, infinite time)
+3. Recognize images (6 images)
+4. Copy same images
+5. Questionnaires
+
+TODO:
+- IRB text should be theirs, NOT MINE
+- Get preloading to fully work (don't let them start until preloaded)
+- Change demographics questions
+- Change instructions
+- Decrease space used in mouse movements
+*/
+
+// parameters set by the experimenter
+// Note: currently using all memorable images
+var fixation_address = "http://www.wilmabainbridge.com/datasets/memorabilitycollector/fixation.jpg";
+var expimages = new Array("http://www.wilmabainbridge.com/research/aphantasia/ims/high_kitchen.jpg","http://www.wilmabainbridge.com/research/aphantasia/ims/low_livingroom.jpg","http://www.wilmabainbridge.com/research/aphantasia/ims/low_bedroom.jpg"); // all experimental images
+var foilImages = new Array("http://www.wilmabainbridge.com/research/aphantasia/ims/foil_kitchen.jpg","http://www.wilmabainbridge.com/research/aphantasia/ims/foil_livingroom.jpg","http://www.wilmabainbridge.com/research/aphantasia/ims/foil_bedroom.jpg"); // all experimental images
+
+
+// for the study task
+//var instructtime = 500; // time for each instruction part and the target
+var stimtime = 10000; // 10000 in milliseconds
+var isi = 1000; // 1000 in milliseconds
+var experimentalText = "";
+var allImArray = []; // a sequence of all the images
+var fullsequence = []; // a sequence of all the images, including fixation
+var timesequence = []; // a sequence of all the timings
+var imCount = 0;
+var eventStartTime = 0;
+var trialnum = 0;
+var drawCount = 1;
+var imstoremember = [0,1,2]; // which ims they should draw from memory
+var images = [];
+
+// for the recognition task
+var recogCount = 0;
+var recogISI = 200; // ms
+var rememberKey = "j"; // case doesn't matter
+var forgetKey = "k";
+var recogArray = [];
+var recogTypeArray = [];
+var recogsequence = []; // get the image in that order
+var recogtypesequence = [];
+var recogperfsequence = [];
+
+// for the copy task
+var imstocopy = [0,1,2]; // which ims they should copy
+var copycount = 0;
+
+// ID constants for image type
+const FIXATION = 0;
+const TARGET = 1;
+const FOIL = 2;
+
+// ID constants for performance
+const NORESP = 10;
+const HIT = 11;
+const MISS = 12;
+const FALSEALARM = 13;
+const CORRECTREJECTION = 14;
+
+// output variables
+var imgstring = "";
+var recogstring = "";
+var recogtypestring = "";
+var recogperfstring = "";
+
+/****************************************Functions*****************************************/
+
+// key press listener
+document.onkeydown = function(key){ processResponse(key);};
+
+// preload and then start
+function buttonPress(){
+	// disable the Start Button
+	//document.getElementById("startbutton").innerHTML = "Experiment Running...";
+	//document.getElementById("startbutton").disabled = true;
+	document.getElementById("startbutton").style.display = 'none';
+	document.getElementById("nextbutton").style.display = 'inline';
+	// take away the instructions
+	updateText("");
+	
+	// study phase
+		console.log("Starting study phase!");
+		makeImSequence(); // get the image order
+		buildFullSequence(); // build the sequence with the images and fixation
+		var imtag = '<div style="font-size:24px">First: <b>Study</b> these 3 images in as much detail as you can. You will have 10 seconds to see each one.<br> You will be tested on your memory for them later.<br><br>Click <b>NEXT</b> to continue.</div>';
+		updateText(imtag);
+		document.getElementById("nextbutton").disabled = false;
+}
+
+// update the experimental text
+function updateText(text){
+	document.getElementById("experimentdisplay").innerHTML = text;
+}
+
+// update the experimental text for a specific amount of time
+function updateTextTimed(text, time){
+	if (textloop == 1) {
+		textloop = 0;
+		return;
+	}
+	document.getElementById("experimentdisplay").innerHTML = text;
+	textloop = 1;
+	var functioncall = "updateTextTimed('" + text + "'," + time + ")";
+	setTimeout(functioncall, time);
+}
+
+// do the recall phase
+function doRecallPhase(){
+	var recallText = "";
+
+	document.getElementById('experimentdisplay').innerHTML = recallText; 
+	document.getElementById('wpaintcont').hidden = false;
+	document.getElementById('instructions').innerHTML = 'Draw picture #' + drawCount + '! Click NEXT for the next one.'; 
+			document.getElementById('howtouse').innerHTML = '<div style="font-size:20pt"><b>Drawing #1</b></div><br><u>How to use:</u><br>Please draw in as much detail as you can, using the pencil. You can change the color of the pencil to color in objects. You can erase or undo any errors. If you do too many undos and see your previous drawing, you can press redo to get back to your current drawing. The X deletes everything in the drawing. Note that when you click "Next" you cannot go back to a previous drawing.';
+	document.getElementById("nextbutton").disabled = false;
+	
+	startRecall = true;
+	setupDrawing();
+	//document.getElementById('startbutton').innerHTML = 'DONE!'; 
+	//document.getElementById('nextbutton').disabled = false; 
+}
+
+
+// get the key and respond
+function processResponse(key){
+
+	if (recogCount > 0) {
+	if(String.fromCharCode(key.keyCode).toLowerCase() == rememberKey.toLowerCase()){ // if they pressed the remember key
+		var trialtype = recogtypesequence[recogCount-1];
+		if (trialtype == TARGET) { // they correctly pressed the button!
+			recogperfsequence[recogCount-1] = HIT;
+			console.log("Hit!");
+		} else { // they shouldn't have pressed
+			recogperfsequence[recogCount-1] = FALSEALARM;
+			console.log("False alarm!");
+		}
+		
+			var imtag = '<img id = "stimulus" height=500 width=500 src = "' + fixation_address + '">';
+	updateText(imtag);
+	saveRecogProgress();
+	
+		setTimeout("doRecognitionPhase()", recogISI);
+	}
+	else if(String.fromCharCode(key.keyCode).toLowerCase() == forgetKey.toLowerCase()){ // if they pressed the forget key
+		var trialtype = recogtypesequence[recogCount-1];
+		if (trialtype == TARGET) { // they made an error
+			recogperfsequence[recogCount-1] = MISS;
+			console.log("Miss!");
+		} else if (trialtype == FOIL) { // they did a good job there
+			recogperfsequence[recogCount-1] = CORRECTREJECTION;
+			console.log("Correct rejection!");
+		}
+		
+			var imtag = '<img id = "stimulus" height=500 width=500 src = "' + fixation_address + '">';
+	updateText(imtag);
+	
+	saveRecogProgress();
+	
+		setTimeout("doRecognitionPhase()", recogISI);
+	}
+	}
+}
+
+// do the copy drawing phase
+function copyDrawingPhase(){
+
+	var imtocopy = expimages[imstocopy[copycount]];
+
+	// if it's the first time doing it
+	if (copycount == 0){
+		var recallText = "<span id='changecopyimage'><img style='margin-top:53px' height=500 width=500 src='" + imtocopy + "'></span>";
+    document.getElementById('experimentdisplay').innerHTML = recallText; 
+    document.getElementById('wpaintcont').hidden = false;
+    //document.getElementById('wpaintcont').style.float = 'right';
+    imnum = copycount + 1;
+	document.getElementById('instructions').innerHTML = 'Drawing #' + imnum + ': Copy the drawing!'; 
+	document.getElementById("nextbutton").disabled = false;
+	$('#wPaint').wPaint('clear');
+		mousemovements = '';
+
+
+	// output the canvas coordinates
+        
+        
+	    rect = document.getElementById('wPaint').getBoundingClientRect();
+        rect2 = document.getElementById('wPaint-img').getBoundingClientRect();
+        rect3 = document.getElementById('experimentdisplay').getBoundingClientRect();
+        
+        document.getElementById('recwpaintleftout').value = rect.left;
+        document.getElementById('recwpaintrightout').value = rect.right;
+        document.getElementById('recwpainttopout').value = rect.top;
+        document.getElementById('recwpaintbottomout').value = rect.bottom;
+        
+        document.getElementById('recwpaintimgleftout').value = rect2.left;
+        document.getElementById('recwpaintimgrightout').value = rect2.right;
+        document.getElementById('recwpaintimgtopout').value = rect2.top;
+        document.getElementById('recwpaintimgbottomout').value = rect2.bottom;
+        
+        document.getElementById('recexpdispleftout').value = rect3.left;
+        document.getElementById('recexpdisprightout').value = rect3.right;
+        document.getElementById('recexpdisptopout').value = rect3.top;
+        document.getElementById('recexpdispbottomout').value = rect3.bottom;
+        
+        	startRecall = true;
+	}
+	else {
+		newim = "<img valign='bottom' height=500 width=500 style='margin-top:53px' src='" + imtocopy + "'>";
+		document.getElementById('changecopyimage').innerHTML = newim;
+	}
+	
+      copycount = copycount + 1;
+      
+}
+
+function doRecognitionPhase(){
+
+	if (recogCount == recogsequence.length){ // when everything is finished
+	
+		// now move onto the distractor task
+		var imtag = "<div style='font-size:24px'>Next: For these next 3 drawings, <b>draw</b> the image you see next to it, using your mouse.<br><br>Press NEXT to continue.</div>";
+		updateText(imtag);
+		document.getElementById('instructions').innerHTML = 'Task Instructions'; 
+		document.getElementById("nextbutton").disabled = false;
+		return;
+	}
+	
+	document.getElementById('instructions').innerHTML = 'Recognition Task'; 
+	// save the performance of the previous trial
+	
+		eventStartTime = Math.floor(Date.now()); // get time in milliseconds
+	var imtag = 'Did you see this image?<br><img id = "stimulus" height=500 width=500 src = "' + recogsequence[recogCount] + '"><br><b>Type: J (YES) or K (NO)</b>';
+	updateText(imtag);
+	
+	recogCount++; 
+
+}
+
+// save to the output variables the performance and sequence completed so far
+function saveRecogProgress(){
+	// get rid of the base address again just to shrink the length of the value
+	if (recogCount-1 >= 0) {
+		var tempimg = recogsequence[recogCount-1];
+		tempimg = tempimg.substring(tempimg.lastIndexOf("/")+1);
+		if (recogCount-1 > 0) {
+			recogstring = recogstring + ",";
+			recogtypestring = recogtypestring + ",";
+			recogperfstring = recogperfstring + ",";
+		}
+		recogstring = recogstring + tempimg;
+		recogtypestring = recogtypestring + recogtypesequence[recogCount-1];
+		recogperfstring = recogperfstring + recogperfsequence[recogCount-1];
+		document.getElementById("recogseqout").value = recogstring;
+		document.getElementById("recogtypeout").value = recogtypestring;
+		document.getElementById("recogperfout").value = recogperfstring;
+		}
+}
+
+
+function setupDrawing(){
+ var images = [
+          '/uploads/wPaint.png',
+        ];
+
+        // init wPaint
+        $('#wPaint').wPaint({
+          path: 'http://wilmabainbridge.com/research/wPaint-2.5.0/',
+          bg: '#FFFFFF',
+          menuOffsetLeft: 120,
+          menuOffsetTop: -50,
+          mode: 'pencil',
+          lineWidth: '3',
+          strokeStyle: '#000000',
+          fillStyle: '#000000'
+        });
+        
+        rect = document.getElementById('wPaint').getBoundingClientRect();
+        rect2 = document.getElementById('wPaint-img').getBoundingClientRect();
+        rect3 = document.getElementById('experimentdisplay').getBoundingClientRect();
+        
+        // output the canvas coordinates
+        document.getElementById('wpaintleftout').value = rect.left;
+        document.getElementById('wpaintrightout').value = rect.right;
+        document.getElementById('wpainttopout').value = rect.top;
+        document.getElementById('wpaintbottomout').value = rect.bottom;
+        
+        document.getElementById('wpaintimgleftout').value = rect2.left;
+        document.getElementById('wpaintimgrightout').value = rect2.right;
+        document.getElementById('wpaintimgtopout').value = rect2.top;
+        document.getElementById('wpaintimgbottomout').value = rect2.bottom;
+        
+        document.getElementById('expdispleftout').value = rect3.left;
+        document.getElementById('expdisprightout').value = rect3.right;
+        document.getElementById('expdisptopout').value = rect3.top;
+        document.getElementById('expdispbottomout').value = rect3.bottom;
+}
+
+// recursive function that shows the intro
+var introcounter = 0;
+
+function animateStudyPhase(){
+
+	document.getElementById('instructions').innerHTML = 'Study these images'; 
+	
+	if (imCount == fullsequence.length){ // when everything is finished
+	
+		// now move onto the distractor task
+		var imtag = "<div style='font-size:24px'>Next: <b>Draw</b> each picture in as much <i>detail</i> as you can from memory, using your mouse. You can draw the pictures in any order. Please draw or label anything you are able to remember.<br><br>Press NEXT when you're done with each image.<br><br><b>Press <b>NEXT</b> to continue.</div>";
+		updateText(imtag);
+		document.getElementById('instructions').innerHTML = 'Task instructions'; 
+		document.getElementById("nextbutton").disabled = false;
+		return;
+	}
+	eventStartTime = Math.floor(Date.now()); // get time in milliseconds
+	var imtag = '<img id = "stimulus" height=500 width=500 src = "' + fullsequence[imCount] + '">';
+	updateText(imtag);
+	
+	saveProgress();
+	
+	imCount++;
+	
+	setTimeout("animateStudyPhase()", timesequence[imCount-1]);
+}
+
+
+// create the image sequence so that it's the distractors, intermixed with a predetermined number of targets
+function makeImSequence(){
+	// sequence for image studying
+	allImArray = shuffleArray(expimages);
+	
+	// make sequence for image recognition later
+	for (var i = 0; i < imstoremember.length; i++) {
+	// add the target images in that were studied
+		recogArray = recogArray.concat(allImArray[imstoremember[i]]);
+		recogTypeArray = recogTypeArray.concat(TARGET);
+	}
+	recogArray = recogArray.concat(foilImages);
+	recogTypeArray = recogTypeArray.concat(populateArrayVal(FOIL, foilImages.length));
+	
+	[recogArray, recogTypeArray] = shuffleArrays([recogArray, recogTypeArray]);
+	
+}
+
+// builds the full sequence with both images and fixations, as well as timings
+function buildFullSequence(){
+	// build the study sequence
+	var i = 0;
+	var imcounter = 0;
+	while (i < imstoremember.length*2){
+		// add an image
+		fullsequence[i] = allImArray[imstoremember[imcounter]]; // get the image in that order
+		timesequence[i] = stimtime; // get the time to show the image
+		i++;
+		imcounter++;
+		
+		// add a fixation
+		fullsequence[i] = fixation_address;
+		timesequence[i] = isi;
+		i++;
+	}
+	document.getElementById("imseqout").value = fullsequence.toString(); // save the images
+	
+	// build the recognition sequence
+	var i = 0;
+	var imcounter = 0;
+	while (i < recogArray.length){
+		// add an image, don't need fixation cause untimed
+		recogsequence[i] = recogArray[imcounter]; // get the image in that order
+		recogtypesequence[i] = recogTypeArray[imcounter];
+		recogperfsequence[i] = NORESP;
+		i++;
+		imcounter++;
+	}
+	document.getElementById("recogseqout").value = fullsequence.toString();
+	
+	console.log("Done building the full sequence.");
+}
+
+
+// save to the output variables the performance and sequence completed so far
+function saveProgress(){
+	// get rid of the base address again just to shrink the length of the value
+	if (imCount >= 0) {
+		var tempimg = fullsequence[imCount];
+		tempimg = tempimg.substring(tempimg.lastIndexOf("/")+1);
+		if (imCount > 0) {
+			imgstring = imgstring + ",";
+		}
+		imgstring = imgstring + tempimg;
+		document.getElementById("imseqout").value = imgstring;
+		}
+}
+
+/*************************************** General useful functions **********************************************/
+
+
+// preloading isn't working!! So skip these functions
+/* // preload images, and once the number of preloaded images
+// reaches the number that needs to be preloaded, enable the start button
+function preload(imarray) {
+	for (i = 0; i < imarray.length; i++) {
+		images[i] = new Image();
+		//images[i].onload = notify;
+		loaded = (images[i].src = imarray[i]);
+		if (loaded.complete) {
+			notifyLoad();
+		}
+	}
+}
+
+// note that an image was preloaded
+function notifyLoad(){
+	preloadcounter++;
+	if (preloadcounter == totalpreload) {
+		document.getElementById('startbutton').value = 'START';
+		document.getElementById('startbutton').disabled = false;
+	}
+} */
+
+
+// populate an array of a range
+function populateArray(start, end){
+	array = [];
+	for (var i = start; i < end; i++){
+		array[i] = i;
+	}
+	return array;
+}
+
+// populate an array of a value
+function populateArrayVal(value, length){
+	array = [];
+	for (var i = 0; i < length; i++){
+		array[i] = value;
+	}
+	return array;
+}
+
+// shuffle an array
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+// shuffle multiple arrays with the same ordering (must all be same length)
+function shuffleArrays(arrays){
+	for (var i = arrays[0].length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1));
+		for (var an = 0; an < arrays.length; an++) {
+			var temp = arrays[an][i];
+			arrays[an][i] = arrays[an][j];
+			arrays[an][j] = temp;
+		}
+	}
+	return arrays;
+}
 			
-			// Five phases of experiment:
-			// 1. Show image 1
-			// 2. Draw image 1
-			// 3. Show image 2
-			// 4. Draw image 2
-			// 5. Demographics questions
+// count the number of occurrences of a value in an array
+function countOccurences(array, value){
+	var counter = 0;
+	for (var i = 0; i < array.length; i++){
+		if (array[i] == value){
+			counter++;
+		}
+	}
+	return counter;
+}
 
-			var experimentPhase = 1;
-			var drawingNumber = 1; // which drawing are we on?
-			var stimTime = 1000; // for how many ms do you want to show the image?
-			var imgURLs = new Array("https://www.wilmabainbridge.com/research/aphantasia/ims/high_kitchen.jpg","https://www.wilmabainbridge.com/research/aphantasia/ims/low_living_room.jpg");
-			// These are the images to be shown in the experiment
 
-			function animateExperiment(){ 
-				if (experimentPhase == 1) {
-					// Show the image for stimtime
-					document.getElementById('startexp').hidden = true; // take away the start button
-					displayImage(0); // Start with the 1st image. Note that Javascript starts with 0 as its first index!
-					setTimeout(animateExperiment, stimTime); // wait the stimtime, then go to the next phase of the experiment
-				} else if (experimentPhase == 2) {
-					// The drawing interface has already been loaded, but it's been hidden. So now we can show it!
-					document.getElementById('imagedisplay').innerHTML = ''; // hide the image
-					document.getElementById('drawingdisplay').hidden = false;
-					document.getElementById('nextbutton').hidden = false; // Reveal the next button
-					// The next phase will be triggered when people press the "Next" button.
-				} else if (experimentPhase == 3) {
-					// See how this is almost identical to phase 1? To make this code even more efficient for more trials, you could make it display an image each time you have an odd-numbered experimentPhase.
-					document.getElementById('drawingdisplay').hidden = true; // hide the drawing canvas
-					displayImage(1);
-					setTimeout(animateExperiment, stimTime);
-				} else if (experimentPhase == 4) {
-					// Show the drawing canvas again.
-					document.getElementById('imagedisplay').innerHTML = ''; // hide the image
-					document.getElementById('drawingdisplay').hidden = false;
-					document.getElementById('nextbutton').hidden = false; // Reveal the next button
-				} else if (experimentPhase == 5) {
-					// Finally, if it's the last phase, show the demographics questions!
-					document.getElementById('drawingdisplay').hidden = true; 
-					document.getElementById('otherquestions').hidden = false;
-					document.getElementById('nextbutton').hidden = true; // Hide the next button
-					document.getElementById('submitButton').hidden = false; // Reveal the submit button
-				}
-			}
-
-			function displayImage(imagenumber){
-				// You pass this function an image number and it displays it in the experiment
-				document.getElementById('nextbutton').hidden = true; // hide the Next button so they can't skip around
-				code = "<img src='" + imgURLs[imagenumber] + "' width=500 height=500>"; // The code to insert into the HTML for the experiment. It displays the image at the same dimensions as the drawing interface.
-				document.getElementById('imagedisplay').innerHTML = code;
-				experimentPhase = experimentPhase + 1;
-			}
+</script>
       </script>
-	</form>
+    </div>
+
+<center><br>
+<span id="wholetable">
+<table style="border:1px solid black">
+	<tbody>
+		<tr>
+			<td style="border:1px solid black">
+			<center>
+			<p><span id="instructions" style="font-size:32;font-family:helvetica">Task Instructions</span></span></p>
+			</center>
+			</td>
+		</tr>
+		<tr>
+			<td height="650" width="1200">
+			<center><table><tr><td valign="top" align="center"><span id="experimentdisplay" style="font-family:helvetica;font-size:24px">This is a multi-part experiment to learn about the vividness of your mental images.<br> It will take approximately 30 minutes and you will get feedback at the end.<br><br>This experiment works for users of Google Chrome, Safari, and Firefox (we do not support Internet Explorer). If possible, please use a desktop computer, laptop, or tablet with a <b>mouse</b> for this task. <br><br>Before beginning, make sure that you read through and agree to our <a href="http://www.wilmabainbridge.com/research/aphantasia/acknowledgement.html" target="_blank">Acknowledgement of Participation</a>.<br><br>Please click below if you have read the above information and are willing to act as a participant in the research study.</span></td><td>
+			<span id="wpaintcont" hidden><center><div class='content-box'><div id='wPaint' style='position:relative; width:500px; height:500px; margin:50px auto 0 auto; border-style:solid; border-color:#000000; border-width:3px'></div> 
+      <div id='wPaint-img' style='position:relative; width:500px; margin:0 auto'></div></div><br><span style='font-family:helvetica;font-size:16px' id='howtouse'><u>How to use:</u><br>Please draw in as much detail as you can, using the pencil. You can change the color of the pencil to color in objects. You can erase or undo any errors. If you do too many undos and see your previous drawing, you can press redo to get back to your current drawing. The X deletes everything in the drawing. Note that when you click "Next" you cannot go back to a previous drawing.</span></center></span></td></tr></table></center>
+			</td>
+		</tr>
+	</tbody>
+</table></span></center><br>
+<span id="vviq" style="font-family:helvetica" hidden>
+Finally, there are two questionnaires we'd like you to fill out:
+<center>
+<h2>Vividness of Visual Imagery Questionnaire</h2>
+For each item on this questionnaire, try to form a visual image, and consider your experience carefully.  For any image that you do experience, rate how vivid it is using the five-point scale described below.  If you do not have a visual image, rate vividness as '1'.  Only use '5' for images that are truly as lively and vivid as real seeing.  Please note that there are no right or wrong answers to the questions, and that it is not necessarily desirable to experience imagery or, if you do, to have more vivid imagery.
+<br><br>
+<table><tr><td>
+<font style="font-family:helvetica;font-size:14px">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No image at all, you only "know" that you are thinking of the object&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vague and dim&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moderately clear and lively&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clear and reasonably vivid&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Perfectly clear and vivid as real seeing&nbsp;&nbsp;
+</font></td>
+<td><font style="font-family:helvetica;font-size:14px">1<br>2<br>3<br>4<br>5</font></td></tr></table>
+</center>
+<div style="margin-left:100px;margin-right:100px">
+<br><br>
+<b>For items 1-4, think of some relative or friend whom you frequently see (but who is not with you at present) and consider carefully the picture that comes before your mind's eye.</b><br>
+<table>
+<tr><td>1.	The exact contour of face, head, shoulders and body&nbsp;&nbsp;<br>
+2.	Characteristic poses of head, attitudes of body etc.&nbsp;&nbsp;<br>
+3.	The precise carriage, length of step etc., in walking&nbsp;&nbsp;<br>
+4.	The different colours worn in some familiar clothes&nbsp;&nbsp;</td><td>
+ <input type="radio" name="vviq1" value="1"> 1
+ <input type="radio" name="vviq1" value="2"> 2
+ <input type="radio" name="vviq1" value="3"> 3
+ <input type="radio" name="vviq1" value="4"> 4
+ <input type="radio" name="vviq1" value="5"> 5<br>
+ 
+  <input type="radio" name="vviq2" value="1"> 1
+ <input type="radio" name="vviq2" value="2"> 2
+ <input type="radio" name="vviq2" value="3"> 3
+ <input type="radio" name="vviq2" value="4"> 4
+ <input type="radio" name="vviq2" value="5"> 5<br>
+ 
+  <input type="radio" name="vviq3" value="1"> 1
+ <input type="radio" name="vviq3" value="2"> 2
+ <input type="radio" name="vviq3" value="3"> 3
+ <input type="radio" name="vviq3" value="4"> 4
+ <input type="radio" name="vviq3" value="5"> 5<br>
+ 
+ <input type="radio" name="vviq4" value="1"> 1
+ <input type="radio" name="vviq4" value="2"> 2
+ <input type="radio" name="vviq4" value="3"> 3
+ <input type="radio" name="vviq4" value="4"> 4
+ <input type="radio" name="vviq4" value="5"> 5
+ </td></tr></table>
+<br>
+<b>Visualise a rising sun.  Consider carefully the picture that comes before your mind's eye.</b><br>
+<table><tr><td>
+5.	The sun rising above the horizon into a hazy sky&nbsp;&nbsp;<br>
+6.	The sky clears and surrounds the sun with blueness&nbsp;&nbsp;<br>
+7.	Clouds.  A storm blows up with flashes of lightning&nbsp;&nbsp;<br>
+8.	A rainbow appears&nbsp;&nbsp;</td><td>
+ <input type="radio" name="vviq5" value="1"> 1
+ <input type="radio" name="vviq5" value="2"> 2
+ <input type="radio" name="vviq5" value="3"> 3
+ <input type="radio" name="vviq5" value="4"> 4
+ <input type="radio" name="vviq5" value="5"> 5<br>
+ 
+  <input type="radio" name="vviq6" value="1"> 1
+ <input type="radio" name="vviq6" value="2"> 2
+ <input type="radio" name="vviq6" value="3"> 3
+ <input type="radio" name="vviq6" value="4"> 4
+ <input type="radio" name="vviq6" value="5"> 5<br>
+ 
+  <input type="radio" name="vviq7" value="1"> 1
+ <input type="radio" name="vviq7" value="2"> 2
+ <input type="radio" name="vviq7" value="3"> 3
+ <input type="radio" name="vviq7" value="4"> 4
+ <input type="radio" name="vviq7" value="5"> 5<br>
+ 
+ <input type="radio" name="vviq8" value="1"> 1
+ <input type="radio" name="vviq8" value="2"> 2
+ <input type="radio" name="vviq8" value="3"> 3
+ <input type="radio" name="vviq8" value="4"> 4
+ <input type="radio" name="vviq8" value="5"> 5
+ </td></tr></table>
+ <br>
+<b>Think of the front of a shop which you often go to.  Consider the picture that comes before your mind's eye.</b><br>
+<table><tr><td>
+9. The overall appearance of the shop from the opposite side
+	of the road&nbsp;&nbsp;<br>
+ 10. A window display including colours, shapes and details of individual items for sale
+&nbsp;&nbsp;<br>
+11. You are near the entrance.  The colour, shape and details of the door&nbsp;&nbsp;<br>
+12. You enter the shop and go to the counter. The counter assistant serves you.  Money changes hands&nbsp;&nbsp;
+</td><td>
+	 <input type="radio" name="vviq9" value="1"> 1
+ <input type="radio" name="vviq9" value="2"> 2
+ <input type="radio" name="vviq9" value="3"> 3
+ <input type="radio" name="vviq9" value="4"> 4
+ <input type="radio" name="vviq9" value="5"> 5<br>
+ 
+	 <input type="radio" name="vviq10" value="1"> 1
+ <input type="radio" name="vviq10" value="2"> 2
+ <input type="radio" name="vviq10" value="3"> 3
+ <input type="radio" name="vviq10" value="4"> 4
+ <input type="radio" name="vviq10" value="5"> 5<br>
+ 
+	 <input type="radio" name="vviq11" value="1"> 1
+ <input type="radio" name="vviq11" value="2"> 2
+ <input type="radio" name="vviq11" value="3"> 3
+ <input type="radio" name="vviq11" value="4"> 4
+ <input type="radio" name="vviq11" value="5"> 5<br>
+ 
+ <input type="radio" name="vviq12" value="1"> 1
+ <input type="radio" name="vviq12" value="2"> 2
+ <input type="radio" name="vviq12" value="3"> 3
+ <input type="radio" name="vviq12" value="4"> 4
+ <input type="radio" name="vviq12" value="5"> 5
+ </td></tr></table>
+<br>
+<b>Finally think of a country scene which involves trees, mountains and a lake.  Consider the picture that comes before your mind's eye.</b><br>
+<table><tr><td>
+13.	The contours of the landscape&nbsp;&nbsp;<br>
+14. The colour and shape of the trees&nbsp;&nbsp;<br>
+15.	the colour and shape of the lake&nbsp;&nbsp;<br>
+16.	A strong wind blows on the trees and on the lake causing
+ 	waves in the water.&nbsp;&nbsp;
+ 	</td><td>
+ 	
+ 	 <input type="radio" name="vviq13" value="1"> 1
+ <input type="radio" name="vviq13" value="2"> 2
+ <input type="radio" name="vviq13" value="3"> 3
+ <input type="radio" name="vviq13" value="4"> 4
+ <input type="radio" name="vviq13" value="5"> 5<br>
+ 
+ 	 <input type="radio" name="vviq14" value="1"> 1
+ <input type="radio" name="vviq14" value="2"> 2
+ <input type="radio" name="vviq14" value="3"> 3
+ <input type="radio" name="vviq14" value="4"> 4
+ <input type="radio" name="vviq14" value="5"> 5<br>
+ 
+ 	 <input type="radio" name="vviq15" value="1"> 1
+ <input type="radio" name="vviq15" value="2"> 2
+ <input type="radio" name="vviq15" value="3"> 3
+ <input type="radio" name="vviq15" value="4"> 4
+ <input type="radio" name="vviq15" value="5"> 5<br>
+ 
+ <input type="radio" name="vviq16" value="1"> 1
+ <input type="radio" name="vviq16" value="2"> 2
+ <input type="radio" name="vviq16" value="3"> 3
+ <input type="radio" name="vviq16" value="4"> 4
+ <input type="radio" name="vviq16" value="5"> 5
+ </td></tr></table>	</div>
+</span>
+<span id="osiq" style="font-family:helvetica" hidden>
+Here is the final set of questions:<br>
+<center>
+<h2>Object-spatial imagery questionnaire (OSIQ)</h2>
+</center>
+<div style="margin-left:100px;margin-right:100px">
+<br><br>
+Please answer the following questions on a scale of 1 (totally disagree) to 5 (totally agree).<br><br>
+</center>
+<b>1.	I was very good in 3-D geometry as a student.</b><br>
+Totally disagree <input type="radio" name="osiq1" value="1"> 1
+ <input type="radio" name="osiq1" value="2"> 2
+ <input type="radio" name="osiq1" value="3"> 3
+ <input type="radio" name="osiq1" value="4"> 4
+ <input type="radio" name="osiq1" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>2.	If I were asked to choose between engineering professions and visual arts, I would prefer engineering.</b>
+<br>
+Totally disagree <input type="radio" name="osiq2" value="1"> 1
+ <input type="radio" name="osiq2" value="2"> 2
+ <input type="radio" name="osiq2" value="3"> 3
+ <input type="radio" name="osiq2" value="4"> 4
+ <input type="radio" name="osiq2" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>3.	Architecture interests me more than painting. </b>
+<br>
+Totally disagree <input type="radio" name="osiq3" value="1"> 1
+ <input type="radio" name="osiq3" value="2"> 2
+ <input type="radio" name="osiq3" value="3"> 3
+ <input type="radio" name="osiq3" value="4"> 4
+ <input type="radio" name="osiq3" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>4.	My images are very colourful and bright. </b>
+<br>
+Totally disagree <input type="radio" name="osiq4" value="1"> 1
+ <input type="radio" name="osiq4" value="2"> 2
+ <input type="radio" name="osiq4" value="3"> 3
+ <input type="radio" name="osiq4" value="4"> 4
+ <input type="radio" name="osiq4" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>5.	I prefer schematic diagrams and sketches when reading a textbook instead of colourful and pictorial illustrations.</b>
+<br>
+Totally disagree <input type="radio" name="osiq5" value="1"> 1
+ <input type="radio" name="osiq5" value="2"> 2
+ <input type="radio" name="osiq5" value="3"> 3
+ <input type="radio" name="osiq5" value="4"> 4
+ <input type="radio" name="osiq5" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>6.	My images are more like schematic representations of things and events rather than detailed pictures.</b>
+<br>
+Totally disagree <input type="radio" name="osiq6" value="1"> 1
+ <input type="radio" name="osiq6" value="2"> 2
+ <input type="radio" name="osiq6" value="3"> 3
+ <input type="radio" name="osiq6" value="4"> 4
+ <input type="radio" name="osiq6" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>7.	When reading fiction, I usually form a clear and detailed mental picture of a scene or room that has been described.</b>
+<br>
+Totally disagree <input type="radio" name="osiq7" value="1"> 1
+ <input type="radio" name="osiq7" value="2"> 2
+ <input type="radio" name="osiq7" value="3"> 3
+ <input type="radio" name="osiq7" value="4"> 4
+ <input type="radio" name="osiq7" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>8.	I have a photographic memory. </b>
+<br>
+Totally disagree <input type="radio" name="osiq8" value="1"> 1
+ <input type="radio" name="osiq8" value="2"> 2
+ <input type="radio" name="osiq8" value="3"> 3
+ <input type="radio" name="osiq8" value="4"> 4
+ <input type="radio" name="osiq8" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>9.	I can easily imagine and mentally rotate 3-dimensional geometric figures.</b> 
+<br>
+Totally disagree <input type="radio" name="osiq9" value="1"> 1
+ <input type="radio" name="osiq9" value="2"> 2
+ <input type="radio" name="osiq9" value="3"> 3
+ <input type="radio" name="osiq9" value="4"> 4
+ <input type="radio" name="osiq9" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>10.	When entering a familiar store to get a specific item, I can easily picture the exact location of the target item, the shelf it stands on, how it is arranged and the surrounding articles.</b>
+<br>
+Totally disagree <input type="radio" name="osiq10" value="1"> 1
+ <input type="radio" name="osiq10" value="2"> 2
+ <input type="radio" name="osiq10" value="3"> 3
+ <input type="radio" name="osiq10" value="4"> 4
+ <input type="radio" name="osiq10" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>11.	 I normally do not experience many spontaneous vivid images; I use my mental imagery mostly when attempting to solve some problems like the ones in mathematics.</b>
+<br>
+Totally disagree <input type="radio" name="osiq11" value="1"> 1
+ <input type="radio" name="osiq11" value="2"> 2
+ <input type="radio" name="osiq11" value="3"> 3
+ <input type="radio" name="osiq11" value="4"> 4
+ <input type="radio" name="osiq11" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>12.	 My images are very vivid and photographic. </b>
+<br>
+Totally disagree <input type="radio" name="osiq12" value="1"> 1
+ <input type="radio" name="osiq12" value="2"> 2
+ <input type="radio" name="osiq12" value="3"> 3
+ <input type="radio" name="osiq12" value="4"> 4
+ <input type="radio" name="osiq12" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>13.	I can easily sketch a blueprint for a building that I am familiar with.</b>
+<br>
+Totally disagree <input type="radio" name="osiq13" value="1"> 1
+ <input type="radio" name="osiq13" value="2"> 2
+ <input type="radio" name="osiq13" value="3"> 3
+ <input type="radio" name="osiq13" value="4"> 4
+ <input type="radio" name="osiq13" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>14.	I am a good Tetris player.</b> 
+<br>
+Totally disagree <input type="radio" name="osiq14" value="1"> 1
+ <input type="radio" name="osiq14" value="2"> 2
+ <input type="radio" name="osiq14" value="3"> 3
+ <input type="radio" name="osiq14" value="4"> 4
+ <input type="radio" name="osiq14" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>15.	If I were asked to choose between studying architecture and visual arts, I would choose visual arts.</b>
+<br>
+Totally disagree <input type="radio" name="osiq15" value="1"> 1
+ <input type="radio" name="osiq15" value="2"> 2
+ <input type="radio" name="osiq15" value="3"> 3
+ <input type="radio" name="osiq15" value="4"> 4
+ <input type="radio" name="osiq15" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>16.	My mental images of different objects very much resemble the size, shape and colour of actual objects that I have seen.</b>
+<br>
+Totally disagree <input type="radio" name="osiq16" value="1"> 1
+ <input type="radio" name="osiq16" value="2"> 2
+ <input type="radio" name="osiq16" value="3"> 3
+ <input type="radio" name="osiq16" value="4"> 4
+ <input type="radio" name="osiq16" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>17.	When I imagine the face of a friend, I have a perfectly clear and bright image.</b>
+<br>
+Totally disagree <input type="radio" name="osiq17" value="1"> 1
+ <input type="radio" name="osiq17" value="2"> 2
+ <input type="radio" name="osiq17" value="3"> 3
+ <input type="radio" name="osiq17" value="4"> 4
+ <input type="radio" name="osiq17" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>18.	I have excellent abilities in technical graphics.</b> 
+<br>
+Totally disagree <input type="radio" name="osiq18" value="1"> 1
+ <input type="radio" name="osiq18" value="2"> 2
+ <input type="radio" name="osiq18" value="3"> 3
+ <input type="radio" name="osiq18" value="4"> 4
+ <input type="radio" name="osiq18" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>19.	I can easily remember a great deal of visual details that someone else might never notice. For example, I would just automatically take some things in, like what colour shirt someone wears or what colour are his/her shoes.</b>
+<br>
+Totally disagree <input type="radio" name="osiq19" value="1"> 1
+ <input type="radio" name="osiq19" value="2"> 2
+ <input type="radio" name="osiq19" value="3"> 3
+ <input type="radio" name="osiq19" value="4"> 4
+ <input type="radio" name="osiq19" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>20.	In high school, I had less difficulty with geometry than with art. </b>
+<br>
+Totally disagree <input type="radio" name="osiq20" value="1"> 1
+ <input type="radio" name="osiq20" value="2"> 2
+ <input type="radio" name="osiq20" value="3"> 3
+ <input type="radio" name="osiq20" value="4"> 4
+ <input type="radio" name="osiq20" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>21.	I enjoy pictures with bright colours and unusual shapes like the ones in modern art.</b>
+<br>
+Totally disagree <input type="radio" name="osiq21" value="1"> 1
+ <input type="radio" name="osiq21" value="2"> 2
+ <input type="radio" name="osiq21" value="3"> 3
+ <input type="radio" name="osiq21" value="4"> 4
+ <input type="radio" name="osiq21" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>22.	Sometimes my images are so vivid and persistent that it is difficult to ignore them.</b>
+<br>
+Totally disagree <input type="radio" name="osiq22" value="1"> 1
+ <input type="radio" name="osiq22" value="2"> 2
+ <input type="radio" name="osiq22" value="3"> 3
+ <input type="radio" name="osiq22" value="4"> 4
+ <input type="radio" name="osiq22" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>23.	When thinking about an abstract concept (e.g. 'a building') I imagine an abstract schematic building in my mind or its blueprint rather than a specific concrete building.</b>
+<br>
+Totally disagree <input type="radio" name="osiq23" value="1"> 1
+ <input type="radio" name="osiq23" value="2"> 2
+ <input type="radio" name="osiq23" value="3"> 3
+ <input type="radio" name="osiq23" value="4"> 4
+ <input type="radio" name="osiq23" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>24.	My images are more schematic than colourful and pictorial.</b>
+<br>
+Totally disagree <input type="radio" name="osiq24" value="1"> 1
+ <input type="radio" name="osiq24" value="2"> 2
+ <input type="radio" name="osiq24" value="3"> 3
+ <input type="radio" name="osiq24" value="4"> 4
+ <input type="radio" name="osiq24" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>25.	I can close my eyes and easily picture a scene that I have experienced. </b>
+<br>
+Totally disagree <input type="radio" name="osiq25" value="1"> 1
+ <input type="radio" name="osiq25" value="2"> 2
+ <input type="radio" name="osiq25" value="3"> 3
+ <input type="radio" name="osiq25" value="4"> 4
+ <input type="radio" name="osiq25" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>26.	I remember everything visually. I can recount what people wore to a dinner and I can talk about the way they sat and the way they looked probably in more detail than I could discuss what they said.</b>
+<br>
+Totally disagree <input type="radio" name="osiq26" value="1"> 1
+ <input type="radio" name="osiq26" value="2"> 2
+ <input type="radio" name="osiq26" value="3"> 3
+ <input type="radio" name="osiq26" value="4"> 4
+ <input type="radio" name="osiq26" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>27.	I find it difficult to imagine how a 3-dimensional geometric figure would exactly look like when rotated.</b>
+<br>
+Totally disagree <input type="radio" name="osiq27" value="1"> 1
+ <input type="radio" name="osiq27" value="2"> 2
+ <input type="radio" name="osiq27" value="3"> 3
+ <input type="radio" name="osiq27" value="4"> 4
+ <input type="radio" name="osiq27" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>28.	My visual images are in my head all the time. They are just right there. </b>
+<br>
+Totally disagree <input type="radio" name="osiq28" value="1"> 1
+ <input type="radio" name="osiq28" value="2"> 2
+ <input type="radio" name="osiq28" value="3"> 3
+ <input type="radio" name="osiq28" value="4"> 4
+ <input type="radio" name="osiq28" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>29.	My graphic abilities would make a career in architecture relatively easy for me.</b>
+<br>
+Totally disagree <input type="radio" name="osiq29" value="1"> 1
+ <input type="radio" name="osiq29" value="2"> 2
+ <input type="radio" name="osiq29" value="3"> 3
+ <input type="radio" name="osiq29" value="4"> 4
+ <input type="radio" name="osiq29" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+<b>30.	When I hear a radio announcer or a DJ I've never actually seen, I usually find myself picturing what he or she might look like.</b>
+<br>
+Totally disagree <input type="radio" name="osiq30" value="1"> 1
+ <input type="radio" name="osiq30" value="2"> 2
+ <input type="radio" name="osiq30" value="3"> 3
+ <input type="radio" name="osiq30" value="4"> 4
+ <input type="radio" name="osiq30" value="5"> 5 &nbsp;&nbsp; Totally agree<br><br>
+
+<p><u>Finally, please also provide the following information:</u><br />
+<br>
+  <b>What was the hardest part of the experiment?</b>&nbsp;&nbsp;
+  <select name ="hardestpart">
+  <option value="default">(Choose One)</option>
+  <option value="memorydrawing">Drawing from Memory</option>
+  <option value="recognition">Recognizing the Images</option>
+  <option value="copydrawing">Copying the Image</option>
+  </select><br><br>
+  
+   <b>Why was this the hardest part, and how did you do the task?</b><br> <textarea name="whyhardest" rows="2" cols="35"/></textarea><br /><br>
+   
+
+<b>Age:</b>&nbsp;&nbsp;&nbsp;<input type="text" name="age"/><br /><br>
+
+<b>Gender:</b>&nbsp;&nbsp;&nbsp;<input name="gender" type="radio" value="female" /> Female &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="gender" type="radio" value="male" /> Male &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="gender" type="radio" value="na" /> Other/No response<br /><br>
+
+<b>Occupation:</b>&nbsp;&nbsp;&nbsp;<input type="text" name="occupation"/><br /><br>
+
+<b>What type of device are you using?</b><br> <input name="device" type="radio" value="desktop" />Desktop Computer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="device" type="radio" value="laptop" /> Laptop &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="device" type="radio" value="tablet" /> Tablet &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="device" type="radio" value="smartphone" /> Smartphone<br><br>
+
+<b>Which are you using right now?</b><br> <input name="inputdevice" type="radio" value="mouse" />Mouse &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="inputdevice" type="radio" value="trackpad" /> Trackpad &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="inputdevice" type="radio" value="joystick" /> Joystick &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="inputdevice" type="radio" value="nub" /> Keyboard nub &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="inputdevice" type="radio" value="finger" /> Finger &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input name="inputdevice" type="radio" value="stylus" /> Stylus<br><br>
+
+<b>How would you rate your artistic abilities?</b><br>
+Very poor <input type="radio" name="artabilities" value="1"> 1
+ <input type="radio" name="artabilities" value="2"> 2
+ <input type="radio" name="artabilities" value="3"> 3
+ <input type="radio" name="artabilities" value="4"> 4
+ <input type="radio" name="artabilities" value="5"> 5 &nbsp;&nbsp; Very good<br><br>
+ 
+ <b>Please briefly list any experience you have with artistic training (e.g., art classes). Write N/A if none. </b><br> <input type="text" name="artexperience" size="50"/><br /><br>
+ 
+Please press <b>SUBMIT</b> when you are done.
+</p>
+</font></div></span>
+&nbsp;
+<center>
+<h3><input autocomplete="off" id="startbutton" onclick="buttonPress()" class="animbutton" type="button" value="Yes I agree to participate in the study">
+
+<input id="nextbutton" type="button" class="animbutton" autocomplete="off" onclick="saveImg()" style="display:none" value="NEXT" disabled/><br><br><br>
+Press this button when you are <b>finished</b> with the task (or if you would like to discontinue):<br><br>
+<input type="submit" class="animbutton" formaction="processdata.php" id="submitbutton" name="Submit" value="SUBMIT">
+
+</center>
+
+
+<div id="preload" style="display:none">
+<img src="http://www.wilmabainbridge.com/datasets/memorabilitycollector/fixation.jpg" width="1" height="1">
+<img src="http://www.wilmabainbridge.com/research/aphantasia/ims/high_kitchen.jpg" width="1" height="1">
+<img src="http://www.wilmabainbridge.com/research/aphantasia/ims/low_livingroom.jpg" width="1" height="1">
+<img src="http://www.wilmabainbridge.com/research/aphantasia/ims/low_bedroom.jpg" width="1" height="1">
+<img src="http://www.wilmabainbridge.com/research/aphantasia/ims/foil_kitchen.jpg" width="1" height="1">
+<img src="http://www.wilmabainbridge.com/research/aphantasia/ims/foil_livingroom.jpg" width="1" height="1">
+<img src="http://www.wilmabainbridge.com/research/aphantasia/ims/foil_bedroom.jpg" width="1" height="1">
+</div>
+
 </body>
 </html>
