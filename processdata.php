@@ -44,19 +44,21 @@ $d4 = testinput($_POST("drawing4"));
 $d5 = testinput($_POST("drawing5"));
 $d6 = testinput($_POST("drawing6"));
 //mouse movements (might delete these since data is not needed)
+/*
 $mm1 = testinput($_POST("mousemove1"));
 $mm2 = testinput($_POST("mousemove2"));
 $mm3 = testinput($_POST("mousemove3"));
 $mm4 = testinput($_POST("mousemove4"));
 $mm5 = testinput($_POST("mousemove5"));
 $mm6 = testinput($_POST("mousemove6"));
+*/
 //canvas edges
 $wl = testinput($_POST("wpaintleft"));
 $wr = testinput($_POST("wpaintright"));
 $wt = testinput($_POST("wpainttop"));
 $wb = testinput($_POST("wpaintbottom"));
 //vviq questions
-$vv1 = testinput($_POST("vviq1"));
+/* $vv1 = testinput($_POST("vviq1"));
 $vv2 = testinput($_POST("vviq2"));
 $vv3 = testinput($_POST("vviq3"));
 $vv4 = testinput($_POST("vviq4"));
@@ -102,9 +104,9 @@ $os26 = testinput($_POST("osiq26"));
 $os27 = testinput($_POST("osiq27"));
 $os28 = testinput($_POST("osiq28"));
 $os29 = testinput($_POST("osiq29"));
-$os30 = testinput($_POST("osiq30"));
+$os30 = testinput($_POST("osiq30")); */
 //final demographic questions
-$hp = testinput($_POST("hardestpart"));
+/* $hp = testinput($_POST("hardestpart"));
 $wh = testinput($_POST("whyhardest"));
 $a = testinput($_POST("age"));
 $g = testinput($_POST("gender"));
@@ -112,7 +114,7 @@ $o = testinput($_POST("occupation"));
 $de = testinput($_POST("device"));
 $in = testinput($_POST("inputdevice"));
 $aa = testinput($_POST("artabilities"));
-$ae = testinput($_POST("artexperience"));
+$ae = testinput($_POST("artexperience")); */
 
 //insert all inputs into database (TODO)
 $sql = "INSERT INTO name_of_database () VALUES ()";
