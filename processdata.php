@@ -58,7 +58,7 @@ $wr = testinput($_POST("wpaintright"));
 $wt = testinput($_POST("wpainttop"));
 $wb = testinput($_POST("wpaintbottom"));
 //vviq questions
-/* $vv1 = testinput($_POST("vviq1"));
+$vv1 = testinput($_POST("vviq1"));
 $vv2 = testinput($_POST("vviq2"));
 $vv3 = testinput($_POST("vviq3"));
 $vv4 = testinput($_POST("vviq4"));
@@ -104,9 +104,9 @@ $os26 = testinput($_POST("osiq26"));
 $os27 = testinput($_POST("osiq27"));
 $os28 = testinput($_POST("osiq28"));
 $os29 = testinput($_POST("osiq29"));
-$os30 = testinput($_POST("osiq30")); */
+$os30 = testinput($_POST("osiq30"));
 //final demographic questions
-/* $hp = testinput($_POST("hardestpart"));
+$hp = testinput($_POST("hardestpart"));
 $wh = testinput($_POST("whyhardest"));
 $a = testinput($_POST("age"));
 $g = testinput($_POST("gender"));
@@ -114,10 +114,10 @@ $o = testinput($_POST("occupation"));
 $de = testinput($_POST("device"));
 $in = testinput($_POST("inputdevice"));
 $aa = testinput($_POST("artabilities"));
-$ae = testinput($_POST("artexperience")); */
+$ae = testinput($_POST("artexperience"));
 
-//insert all inputs into database (add commented vviq/osiq/demographic questions IF surveymonkey fails)
-$sql = "INSERT INTO name_of_database (imseq, recogseq, recogtypeseq, recogperfseq, drawing1, drawing2, drawing3, drawing4, drawing5, drawing6, wpaintleft, wpaintright, wpainttop, wpaintbottom) VALUES ('$is','$rs','$rts','$rps','$d1','$d2','$d3','$d4','$d5','$d6','$wl','$wr','$wt','$wb')";
+//insert all inputs into database
+$sql = "INSERT INTO name_of_database (imseq,recogseq,recogtypeseq,recogperfseq,drawing1,drawing2,drawing3,drawing4,drawing5,drawing6,wpaintleft,wpaintright,wpainttop,wpaintbottom,vviq1,vviq2,vviq3,vviq4,vviq5,vviq6,vviq7,vviq8,vviq9,vviq10,vviq11,vviq12,vviq13,vviq14,vviq15,vviq16,osiq1,osiq2,osiq3,osiq4,osiq5,osiq6,osiq7,osiq8,osiq9,osiq10,osiq11,osiq12,osiq13,osiq14,osiq15,osiq16,osiq17,osiq18,osiq19,osiq20,osiq21,osiq22,osiq23,osiq24,osiq25,osiq26,osiq27,osiq28,osiq29,osiq30,hardestpart,whyhardest,age,gender,occupation,device,inputdevice,artabilities,artexperience) VALUES ('$is','$rs','$rts','$rps','$d1','$d2','$d3','$d4','$d5','$d6','$wl','$wr','$wt','$wb','$vv1','$vv2','$vv3','$vv4','$vv5','$vv6','$vv7','$vv8','$vv9','$vv10','$vv11','$vv12','$vv13','$vv14','$vv15','$vv16','$os1','$os2','$os3','$os4','$os5','$os6','$os7','$os8','$os9','$os10','$os11','$os12','$os13','$os14','$os15','$os16','$os17','$os18','$os19','$os20','$os21','$os22','$os23','$os24','$os25','$os26','$os27','$os28','$os29','$os30','$wh','$a','$g','$o','$de','$in','$aa','$ae')";
 
 //web message for completed surveys
 if (mysqli_query($connect, $sql)) {
