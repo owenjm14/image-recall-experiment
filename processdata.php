@@ -1,4 +1,4 @@
-//11 jan 2024
+//7 feb 2024
 
 //login data for online database
 //TODO: set these once i actually know whats going on with the database
@@ -116,5 +116,13 @@ $in = testinput($_POST("inputdevice"));
 $aa = testinput($_POST("artabilities"));
 $ae = testinput($_POST("artexperience")); */
 
-//insert all inputs into database (TODO)
-$sql = "INSERT INTO name_of_database () VALUES ()";
+//insert all inputs into database (add commented vviq/osiq/demographic questions IF surveymonkey fails)
+$sql = "INSERT INTO name_of_database (imseq, recogseq, recogtypeseq, recogperfseq, drawing1, drawing2, drawing3, drawing4, drawing5, drawing6, wpaintleft, wpaintright, wpainttop, wpaintbottom) VALUES ('$is','$rs','$rts','$rps','$d1','$d2','$d3','$d4','$d5','$d6','$wl','$wr','$wt','$wb')";
+
+//web message for completed surveys
+if (mysqli_query($connect, $sql)) {
+  $displayperformance = "<div style='font-family:helvetica;font-size:24'> Thank you for participating in this study. Your time is greatly appreciated.<br><br>You may now close this tab.</div>";
+} else {
+  $displayperformance = "Error: " . $sql . "<br>" . mysqli_error($connect);
+}
+mysqli_close($connect);
