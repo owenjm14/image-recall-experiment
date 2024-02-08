@@ -1,11 +1,10 @@
-//7 feb 2024
+//8 feb 2024
 
 //login data for online database
-//TODO: set these once i actually know whats going on with the database
-$host_name = "";
-$database = "";
-$user_name = "";
-$password = "";
+$host_name = "REDACTED";
+$database = "REDACTED";
+$user_name = "REDACTED";
+$password = "REDACTED";
 
 //connect to database
 $connect = mysqli_connect ($host_name, $user_name, $password, $database);
@@ -121,7 +120,7 @@ $sql = "INSERT INTO name_of_database (imseq,recogseq,recogtypeseq,recogperfseq,d
 
 //web message for completed surveys
 if (mysqli_query($connect, $sql)) {
-  $displayperformance = "<div style='font-family:helvetica;font-size:24'> Thank you for participating in this study. Your time is greatly appreciated.<br><br>You may now close this tab.</div>";
+  $displayperformance = "<div style='font-family:helvetica;font-size:24'> Thank you for participating in this study!<br><br>You may now close this tab.</div>";
 } else {
   $displayperformance = "Error: " . $sql . "<br>" . mysqli_error($connect);
 }
