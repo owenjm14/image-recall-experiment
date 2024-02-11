@@ -27,7 +27,6 @@
     
     //get all values sent from drawing experiment (index.html)
     //encompasses anything from an <input> tag and identifies it from what's under "name"
-    //TODO: edit these as i add more values to collect in the main experiment; drawings; finish WB tutorial #3
     
     //study: image sequence(?)
     $is = testinput($_POST("imseq"));
