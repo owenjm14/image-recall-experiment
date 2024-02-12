@@ -14,7 +14,7 @@
     
     //check connection - return error if issue found
     if(mysqli_connect_errno()) {
-      $message = 'There was a connection error: ' . mysqli_conncect_error();
+      $message = 'There was a connection error: ' . mysqli_connect_error();
     }
     
     //clean up data to prevent security risks
