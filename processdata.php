@@ -1,4 +1,5 @@
 <html>
+  <link rel="icon" href="web-design.png" type="image/x-icon"/> <!-- image: Flaticon.com -->
   <?php
     //login data for online database
     $host_name = "REDACTED";
