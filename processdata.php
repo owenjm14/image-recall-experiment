@@ -111,7 +111,7 @@
     
     //web message for completed surveys
     if (mysqli_query($connect, $sql)) {
-      $displayperformance = "<div style='font-family:helvetica;font-size:24px'> Thank you for participating in this study!<br><br>You may now close this tab.</div>";
+      $displayperformance = "<div style='font-family:helvetica;font-size:24px'> Thank you for taking the time to help make this research possible.<br><br>You may now exit the tab.</div>";
     } else {
       $displayperformance = "Error: " . $sql . "<br>" . mysqli_error($connect);
     }
