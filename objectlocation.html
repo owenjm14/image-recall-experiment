@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- March 9, 2021
+By: Wilma Bainbridge
+
+This is a Javascript and HTML survey that asks participants to move and resize an ellipse to indicate where the object is in a drawing.
+
+One note is that we have removed our IRB information here. Make sure your task complies with your current ethics boards procedures.
+
+Important Note: This experiment relies on the Raphael Javascript library for vector graphics, for drawing the ellipse.
+I have provided a temporary link on my server to this package, but you should upload your own version of it and attribute it as needed. 
+You can learn more about it at https://dmitrybaranovskiy.github.io/raphael/.
+/-->
+
+<head>
+	<title> Object Location Scoring</title>
+	<meta charset="utf-8" />
+</head>
+
+<body>
+	<script src="https://wilmabainbridge.com/research/turkfiles/raphael-min.js"></script> <!-- Import Raphael -->
+	<script type = "text/javascript">
+
+		// This is all the code that allows the moving and resizing of the ellipse
+
+		// Add functions for what happens when the shape is being dragged
+		var dragStart = function() {
+			// Save the starting values
+			this.ox = this.attr('cx'); // ox/cx = object centroid x-coordinate
+			this.oy = this.attr('cy'); // oy/cy = object centroid y-coordinate
+			this.ow = this.attr('rx'); // ow/rx = object width / radius x-length
+			this.oh = this.attr('ry'); // oh/ry = object height / radius y-height
+			this.dragging = true;
+		};
+
+		// Inspect cursor to determine which resize / move process to use
+		var dragMove = function(dx, dy) {
+
+			switch (this.attr('cursor')) {
+
+				// if they're resizing to the West, let it move in that direction
+				case 'w-resize' :
+					this.attr({
+						cx: this.ox + dx, 
+						cy: this.oy + dy, 
+						rx: this.ow - dx, 
+						ry: this.oh - dy
+					});
+					updateLocation(this);
+					break;
+
+				// if they're resizing to the East, let it move in that direction
+				case 'e-resize' :
+					this.attr({ 
+						cx: this.ox + dx, 
+						cy: this.oy + dy, 
+						rx: this.ow + dx, 
+						ry: this.oh + dy
+					});
+					updateLocation(this);
+					break;
+
+				// if they're resizing to the North, let it move in that direction
+				case 'n-resize' :
+					this.attr({
+						cx: this.ox + dx, 
+						cy: this.oy + dy, 
+						rx: this.ow - dx, 
+						ry: this.oh - dy
+					});
+					updateLocation(this);
+					break;
+
+				// if they're resizing to the South, let it move in that direction
+				case 's-resize' :
+					this.attr({ 
+						cx: this.ox + dx, 
+						cy: this.oy + dy, 
+						rx: this.ow + dx, 
+						ry: this.oh + dy
+					});
+					updateLocation(this);
+					break;
+
+				// otherwise - let them move the whole ellipse, but not resize
+				default :
+					this.attr({
+						cx: this.ox + dx, 
+						cy: this.oy + dy
+					});
+					updateLocation(this);
+					break;
+
+			}
+		};
+
+		// Finish the dragging action and save the location
+		var dragEnd = function() {
+			updateLocation(this);
+			this.dragging = false;
+		};
+
+		// Update the location outputted to AMT
+		function updateLocation(obj) {
+			console.log(obj.attr('cx') + ', ' + obj.attr('cy') + ', ' + obj.attr('rx') + ', ' + obj.attr('ry')); // uncomment to see outputs of the size and location of the ellipse
+			document.getElementById('cx').value = obj.attr('cx');
+			document.getElementById('cy').value = obj.attr('cy');
+			document.getElementById('rx').value = obj.attr('rx');
+			document.getElementById('ry').value = obj.attr('ry');
+		}
+		
+		// Change the appearance of the cursor based on what is being done
+		var changeCursor = function(e, mouseX, mouseY) {
+
+			// Don't change cursor during a drag operation
+			if (this.dragging === true) {
+				return;
+			}
+
+			// Calculate X,Y Coordinates relative to shape's orgin
+			var boundingrect = document.getElementById("canvas_container").getBoundingClientRect();
+			var relativeX = mouseX - boundingrect.left - this.attr('cx');
+			var relativeY = mouseY - boundingrect.top - this.attr('cy');
+			var shapeWidth = this.attr('rx');
+			var shapeHeight = this.attr('ry');
+
+			var resizeBorder = 20; // How many pixels you want the resize option to appear for
+			
+			// This calculates what type of action to perform based on where the user's cursor is.
+			if (relativeX+shapeWidth < resizeBorder && relativeY < resizeBorder) {
+				this.attr('cursor', 'w-resize');
+			}
+			else if (relativeX > shapeWidth-resizeBorder && relativeY < resizeBorder) {
+				this.attr('cursor', 'e-resize');
+			}
+			else if (relativeX < shapeWidth-resizeBorder && relativeY < resizeBorder-shapeHeight) {
+				this.attr('cursor', 'n-resize');
+			}
+			else if (relativeX < shapeWidth-resizeBorder && relativeY > shapeHeight-resizeBorder) {
+				this.attr('cursor', 's-resize');
+			}
+			else { 
+				this.attr('cursor', 'move');
+			}
+		};
+   
+		// Create drawing area when the window is loaded
+		window.onload = function() {
+			var paper = Raphael(document.getElementById('canvas_container'), 500, 500); // This is set here for a 500 x 500 pixel image
+			var drawingurl = document.getElementById('drawingurl').value;
+			var bgimg = paper.image(drawingurl, 0, 0, 500, 500); // Put the drawing in the background of the ellipse
+
+			// Add an ellipse
+			var ellipse = paper.ellipse(250,250,100,80); // How big the ellipse starts, and where
+			ellipse.attr("stroke","#ff0000"); // The color of the outer line (red)
+			ellipse.attr("stroke-width","3"); // The thickness of the outer line
+			ellipse.attr("fill","#ff0000"); // The fill of the ellipse
+			ellipse.attr("fill-opacity",".3"); // The opacity / transparency of the ellipse
+
+			// Attach "Mouse Over" handler to ellipse
+			ellipse.mousemove(changeCursor);
+
+			// Attach "Drag" handlers to ellipse
+			ellipse.drag(dragMove, dragStart, dragEnd);
+		}
+
+	</script>
+
+	<!-- Now onto the HTML of the experiment, setting how it looks! -->
+
+	<center>
+		<!-- Here you will see placeholders for the image URLs, where ${image} is where you'd put the URL for the image, and ${drawing} is the URL for the drawing. -->
+		<!-- This is the sort of syntax Amazon Mechanical Turk uses for dynamic variables. -->
+
+		<!-- Here are hidden inputs the Ellipse code reads from, and then writes to -->
+		<input id="drawingurl" name="drawingurl" type="hidden" value="${drawing}" />
+		<!-- Ellipse location and size information -->
+		<input id="cx" name="cx" type="hidden" value="" />
+		<input id="cy" name="cy" type="hidden" value="" />
+		<input id="rx" name="rx" type="hidden" value="" />
+		<input id="ry" name="ry" type="hidden" value="" />
+
+		<h1>Circle the object in the drawing!</h1> <br />
+
+		<div style="font-size:18px">
+			<b>Move and resize</b> the circle to cover the same object in the drawing as the one that is outlined in red in the picture.<br />
+			You can resize the circle from its sides. Try to cover as closely to the area of that <i>specific</i> object as you can.<br />
+			Do not make the circle disappear, or it will not return! Even if you think the object is not there, please try your best.<br /></br>
+		</div>
+
+		<!-- We use a table here to align the image and the drawing -->
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<div style="text-align:center">
+							<font size="5">Picture</font><br />
+							<img height="500" width="500" src="${image}" />
+						</div>
+					</td>
+					<td>
+						<div style="text-align:center">
+							<font size="5">Drawing</font><br />
+							<div id="canvas_container">&nbsp;</div> <!-- This is where the ellipse and drawing image will go -->
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	<p><input id="submitbutton" name="submit" type="submit" value="Submit HIT" /></p>
+	</center>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- March 9, 2021
+By: Wilma Bainbridge
+
+This is a fairly simple HTML survey that asks participants to judge which objects are in an image.
+
+One note is that we have removed our IRB information here. Make sure your task complies with your current ethics boards procedures.
+/-->
+
+<head>
+	<title> Object Selection Scoring</title>
+
+	<!-- This is CSS which outlines the objects as you select them -->
+	<style type="text/css">
+
+		/* The style when it's unchecked */
+		.check-option + label > .highlightbox {
+			padding:8px;
+		}
+
+		/* The style when it's checked */
+		.check-option:checked + label > .highlightbox {
+			border: 8px solid #f9a20c;
+			padding:0px;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="text-align:center">
+
+	<h1>Choose the objects in the drawing</h1> 
+
+	<p style="font-size:18">1. The photographs below have an object outlined in red.<br />
+	<b>Click the picture</b> if that <u>object</u> is in the drawing.<br />
+	If none of the objects are in the drawing, don't select anything.</p>
+
+	<!-- I use placeholders for the  URLs, where ${drawing} is where you'd put the URL for the drawing, and you should put the object urls in ${object1},${object2},... etc.
+	<!-- This is the sort of syntax Amazon Mechanical Turk uses for dynamic variables. -->
+	<!-- Note that we have limited the image size here in the "height" attribute to 350 pixels. Feel free to change this! -->
+	<img height="350" src="${drawing}" /><br /><br />
+
+	Click the picture(s) if that object is in the drawing.
+	
+	<!-- This uses a table to keep the options aligned -->
+	<table>
+		<tbody>
+			<tr>
+				<td width="250">
+					<div style="text-align:center"><input class="check-option" id="check1" name="objects" type="checkbox" value="1" /><label class="label-for-check" for="check1"><img class="highlightbox" id="obj1" src="${object1}" width="250" /></label></div>
+				</td>
+				<td width="250">
+					<div style="text-align:center"><input class="check-option" id="check2" name="objects" type="checkbox" value="2" /><label class="label-for-check" for="check2"><img class="highlightbox" id="obj2" src="${object2}" width="250" /></label></div>
+				</td>
+				<td width="250">
+					<div style="text-align:center"><input class="check-option" id="check3" name="objects" type="checkbox" value="3" /><label class="label-for-check" for="check3"><img class="highlightbox" id="obj3" src="${object3}" width="250" /></label></div>
+				</td>
+				<td width="250">
+					<div style="text-align:center"><input class="check-option" id="check4" name="objects" type="checkbox" value="4" /><label class="label-for-check" for="check4"><img class="highlightbox" id="obj4" src="${object4}" width="250" /></label></div>
+				</td>
+				<td width="250">
+					<div style="text-align:center"><input class="check-option" id="check5" name="objects" type="checkbox" value="5" /><label class="label-for-check" for="check5"><img class="highlightbox" id="obj1" src="${object5}" width="250" /></label></div>
+				</td>
+				<td width="250">
+					<div style="text-align:center"><input class="check-option" id="check0" name="objects" type="checkbox" value="0" /><br><label class="label-for-check" for="check0"><div style="height:250px;width:250px;font-size:24px;"><br /><br />None of the above.</div></label></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+
+	---------------------------------------------------------------------------<br />
+
+
+	<!-- This is a catch question to check if participants are answering accurately. This can be taken out as it slows down people's performance on the task. -->
+	<input type="hidden" id="CC" name="correctcatch" value="xx"> <!-- This stores the correct answer. -->
+
+	<b>2. What number is this?</b>
+	<script type="text/javascript">
+		var catchnum = Math.floor((Math.random() * 5)+1); // generate a random number from 1 to 5
+		document.write(catchnum);
+		document.getElementById("CC").value = catchnum;
+		</script>
+	<br />
+
+	<!-- This is where people respond on the catch question -->
+	<input name = "catchresponse" type="radio" value="1" /> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	<input name = "catchresponse" type="radio" value="2" /> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	<input name = "catchresponse" type="radio" value="3" /> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	<input name = "catchresponse" type="radio" value="4" /> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	<input name = "catchresponse" type="radio" value="5" /> 5
+
+	<br /> <br />
+
+	<input id="submitbutton" name="submit" type="submit" value="Submit HIT" />
+	</div>
+</body>
+
+</html>

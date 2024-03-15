@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- March 9, 2021
+By: Wilma Bainbridge
+
+This is a fairly simple HTML survey that asks participants to judge how well a drawing corresponds to a specific image. 
+
+One note is that we have removed our IRB information here. Make sure your task complies with your current ethics boards procedures.
+/-->
+
+<head>
+	<title> Drawing Judgment Scoring</title>
+</head>
+
+<body>
+	<div style="text-align:center">
+		<h1>Is this a drawing of this image?</h1>
+
+		<p style="font-size:18"> Please answer questions carefully as we will be reviewing answers.</p>
+
+		<!-- Here, there are placeholders for the image URLs, where ${image} is where you'd put the URL for the image, and ${drawing} is the URL for the drawing. -->
+		<!-- This is the sort of syntax Amazon Mechanical Turk uses for dynamic variables. -->
+		<!-- Note that we have limited the image size here in the "height" attribute to 370 pixels. Feel free to change this! -->
+		<img height="370" src="${image}" /> <img height="370" src="${drawing}" /> <br/><br/>
+		<p style="font-size:18">1. Is this a drawing of this image?</p></b>
+
+		<!-- Here is where people respond. It will be saved on AMT under a variable called "matchresponse" -->
+		<input name = "matchresponse" type = "radio" value="DefinitelyNot" />Definitely Not &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "matchresponse" type = "radio" value="ProbablyNot" /> Probably Not &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "matchresponse" type = "radio" value="Unsure" /> Unsure &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "matchresponse" type = "radio" value="Probably" /> Probably &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "matchresponse" type = "radio" value="Definitely" /> Definitely 
+
+		<br /> <br />
+
+		<!-- This is a catch question to check if participants are answering accurately. This can be taken out as it slows down people's performance on the task. -->
+		<input type="hidden" id="CC" name="correctcatch" value="xx"> <!-- This stores the correct answer. -->
+
+		<b>2. What number is this?</b>
+		<script type="text/javascript">
+			var catchnum = Math.floor((Math.random() * 5)+1); // generate a random number from 1 to 5
+			document.write(catchnum);
+			document.getElementById("CC").value = catchnum;
+        </script>
+		<br />
+
+		<!-- This is where people respond on the catch question -->
+		<input name = "catchresponse" type="radio" value="1" /> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "catchresponse" type="radio" value="2" /> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "catchresponse" type="radio" value="3" /> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "catchresponse" type="radio" value="4" /> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		<input name = "catchresponse" type="radio" value="5" /> 5
+
+		<br /> <br />
+
+		<input id="submitbutton" name="submit" type="submit" value="Submit HIT" />
+	</div>
+</body>
+
+</html>
